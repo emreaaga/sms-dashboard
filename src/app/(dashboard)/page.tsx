@@ -50,7 +50,7 @@ export default function RequestsPage() {
       return
     }
 
-    let url = new URL('http://185.8.212.114:8987/api/report/sms')
+    let url = new URL('/api/report/sms')
     url.searchParams.set('page', String(idx))
     url.searchParams.set('size', String(size))
     if (range?.from) {
