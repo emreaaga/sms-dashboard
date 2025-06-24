@@ -50,7 +50,7 @@ export default function RequestsPage() {
       return
     }
 
-    let url = new URL('/api/report/sms')
+    const url = new URL('/api/report/sms', window.location.origin)
     url.searchParams.set('page', String(idx))
     url.searchParams.set('size', String(size))
     if (range?.from) {
