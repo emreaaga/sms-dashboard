@@ -29,6 +29,7 @@ export default function RequestsPage() {
   const [rows, setRows] = useState<ApiEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  
 
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(10)
