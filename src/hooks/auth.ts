@@ -1,6 +1,7 @@
 const API = 'http://185.8.212.114:8987'
 
 type LoginResponse = {
+  message: string
   status: number
   data: {
     accessToken: string
