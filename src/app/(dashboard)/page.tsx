@@ -50,6 +50,7 @@ export default function RequestsPage() {
       return
     }
 
+    // Формируем URL относительно текущего origin
     const url = new URL('/api/report/sms', window.location.origin)
     url.searchParams.set('page', String(idx))
     url.searchParams.set('size', String(size))
