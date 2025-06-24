@@ -22,7 +22,6 @@ import {
 } from 'lucide-react'
 import { DatePickerWithRange } from '@/components/admin-panel/data-picker'
 import type { DateRange } from 'react-day-picker'
-import { Input } from '@/components/ui/input'
 
 export default function RequestsPage() {
   const router = useRouter()
@@ -92,13 +91,7 @@ export default function RequestsPage() {
     fetchPage(pageIndex, pageSize, dateRange)
   }, [pageIndex, pageSize, dateRange])
 
-  if (loading) {
-    return (
-      <ContentLayout title="SMS отчёты">
-        <div>Загрузка…</div>
-      </ContentLayout>
-    )
-  }
+
   if (error) {
     return (
       <ContentLayout title="SMS отчёты">
@@ -110,7 +103,6 @@ export default function RequestsPage() {
   return (
     <ContentLayout title="SMS отчёты">
       <div className="mb-4 flex flex-wrap items-center gap-4">
-        {/* 1) Календарь */}
         <DatePickerWithRange
           date={dateRange}
           onSelect={range => {
@@ -118,30 +110,6 @@ export default function RequestsPage() {
             setPageIndex(0)
           }}
         />
-
-        {/* 2) Инпут с иконкой */}
-        <div className="relative w-64">
-          <Input
-            type="text"
-            placeholder="Поиск..."
-            className="w-full pl-10 pr-3 py-2 border rounded-2xl text-sm"
-          />
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1116.65 2a7.5 7.5 0 010 14.65z"
-            />
-          </svg>
-        </div>
-
-        {/* 3) Кнопка сброса */}
         <Button
           variant="ghost"
           size="sm"
@@ -154,7 +122,6 @@ export default function RequestsPage() {
         </Button>
       </div>
 
-
       <div className="overflow-auto mb-4">
         <DataTable<ApiEntry, typeof apiSchema>
           data={rows}
@@ -164,7 +131,7 @@ export default function RequestsPage() {
         />
       </div>
 
-      <div className="flex items-center justify-between px-4 py-2 border-t">
+      <div className="flex items-center justify-between px-4 py-2">
         <div className="flex gap-2">
           <Button size="icon" variant="outline" onClick={() => setPageIndex(0)} disabled={pageIndex === 0}>
             <ChevronsLeftIcon />

@@ -4,6 +4,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Loader2Icon } from "lucide-react"
+import { useState } from "react"
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+
 
 export interface LoginFormProps
   extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -15,6 +18,7 @@ export function LoginForm({
   loading = false,
   ...props
 }: LoginFormProps) {
+  const [visible, setVisible] = useState(false)
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-start gap-1 text-left">
@@ -23,12 +27,12 @@ export function LoginForm({
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
+          <Label htmlFor="login">Логин</Label>
           <Input disabled={loading} className="rounded-xl" id="login" name="login" type="text" placeholder="Ваш логин" required />
         </div>
         <div className="grid gap-3">
-          <div className="flex items-center">
-          </div>
-          <Input disabled={loading} className="rounded-xl" id="password" name="password" placeholder="Пароль" type="password" required />
+          <Label htmlFor="password">Пароль</Label>
+          <Input disabled={loading} className="rounded-xl" id="password" name="password" placeholder="Введите пароль" type="password" required />
         </div>
         <Button
           type="submit"
@@ -46,7 +50,7 @@ export function LoginForm({
         </Button>
       </div>
       <div className="flex text-left text-sm space-x-2 items-center">
-        <Checkbox id="remember" disabled={loading}/>
+        <Checkbox id="remember" disabled={loading} />
         <Label htmlFor="remember">Запомнить меня</Label>
       </div>
     </form>

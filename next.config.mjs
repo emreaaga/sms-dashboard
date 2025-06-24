@@ -8,6 +8,15 @@ const nextConfig = {
     });
     return config;
   },
-};
 
-export default nextConfig;
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',                  
+        destination: 'http://185.8.212.114:8987/api/:path*',  
+      },
+    ]
+  },
+}
+
+export default nextConfig

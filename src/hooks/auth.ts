@@ -1,4 +1,4 @@
-const API = 'http://185.8.212.114:8987'
+const AUTH_BASE = '/api/system/auth'
 
 type LoginResponse = {
   message: string
@@ -14,8 +14,11 @@ type LoginResponse = {
 let refreshTimeoutId: number | null = null
 
 export function scheduleRefresh(expiresIn: number) {
+  // обновляем за минуту до истечения
   const msBefore = expiresIn - 60_000
-  if (refreshTimeoutId) clearTimeout(refreshTimeoutId)
+  if (refreshTimeoutId !== null) {
+    clearTimeout(refreshTimeoutId)
+  }
   refreshTimeoutId = window.setTimeout(doRefresh, msBefore)
 }
 
@@ -24,22 +27,23 @@ async function doRefresh() {
     const refreshToken = sessionStorage.getItem('refreshToken')
     if (!refreshToken) throw new Error('Нет refreshToken')
 
-    const res = await fetch(`${API}/api/system/auth/refresh`, {
+    const res = await fetch(`${AUTH_BASE}/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken })
+      body: JSON.stringify({ refreshToken }),
     })
     const body: LoginResponse = await res.json()
-    if (!res.ok || body.status !== 0) throw new Error(body.message || 'Refresh error')
+    if (!res.ok || body.status !== 0) {
+      throw new Error(body.message || 'Refresh error')
+    }
 
     const { accessToken, refreshToken: newRt, expiresIn } = body.data
     sessionStorage.setItem('accessToken', accessToken)
     sessionStorage.setItem('refreshToken', newRt)
-    sessionStorage.setItem('expiresIn', String(expiresIn))
 
-    // следующий таймер
+    // Запланировать следующее обновление
     scheduleRefresh(expiresIn)
-    console.log('[auth] Токен обновлён, новый expiresIn =', expiresIn)
+    console.log('[auth] Токен обновлён, expiresIn =', expiresIn)
   } catch (e) {
     console.error('[auth] Не удалось обновить токен:', e)
     window.location.replace('/login')
@@ -47,19 +51,21 @@ async function doRefresh() {
 }
 
 export async function login(username: string, password: string) {
-  const res = await fetch(`${API}/api/system/auth/login`, {
+  const res = await fetch(`${AUTH_BASE}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({ username, password }),
   })
   const body: LoginResponse = await res.json()
-  if (!res.ok || body.status !== 0) throw new Error(body.message || 'Login error')
+  if (!res.ok || body.status !== 0) {
+    throw new Error(body.message || 'Login error')
+  }
 
   const { accessToken, refreshToken, expiresIn } = body.data
   sessionStorage.setItem('accessToken', accessToken)
   sessionStorage.setItem('refreshToken', refreshToken)
-  sessionStorage.setItem('expiresIn', String(expiresIn))
 
+  scheduleRefresh(expiresIn)
 }
 
 export function logout() {

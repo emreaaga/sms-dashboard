@@ -27,18 +27,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import {
-  ChevronDownIcon,
-} from "lucide-react"
 import { z } from "zod"
-
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Table,
   TableBody,
@@ -48,7 +37,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
 
 type DataTableProps<TData, TSchema extends z.ZodObject<any>> = {
   data: TData[]
@@ -65,7 +53,6 @@ export function DataTable<TData, TSchema extends z.ZodObject<any>>({
   columns: initialColumns,
   schema,
   getRowId = (row: any) => row.id.toString(),
-  renderToolbar,
   renderActionButton,
   twoColumnsMode = false,
 }: DataTableProps<TData, TSchema>) {
@@ -148,38 +135,9 @@ export function DataTable<TData, TSchema extends z.ZodObject<any>>({
       )
     }
   }
-
-  const defaultToolbar = (
-    <div className="flex items-center justify-between gap-4 px-4 lg:px-6">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="rounded-2xl" size="sm">
-            <ChevronDownIcon className="mr-2" />
-            <span>Столбцы</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {table
-            .getAllColumns()
-            .filter(col => col.getCanHide())
-            .map(col => (
-              <DropdownMenuCheckboxItem
-                key={col.id}
-                checked={col.getIsVisible()}
-                onCheckedChange={val => col.toggleVisibility(!!val)}
-              >
-                {col.id}
-              </DropdownMenuCheckboxItem>
-            ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  )
-
+  
   return (
     <Tabs defaultValue="outline" className="flex flex-col gap-2 w-full">
-
-
       <TabsContent value="outline" className="px-4 lg:px-6 overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           {twoColumnsMode ? (
