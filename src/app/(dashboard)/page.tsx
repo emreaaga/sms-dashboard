@@ -29,7 +29,6 @@ export default function RequestsPage() {
   const [rows, setRows] = useState<ApiEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
 
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(10)
@@ -51,7 +50,6 @@ export default function RequestsPage() {
       return
     }
 
-    // Формируем URL относительно текущего origin
     const url = new URL('/api/report/sms', window.location.origin)
     url.searchParams.set('page', String(idx))
     url.searchParams.set('size', String(size))
@@ -93,7 +91,6 @@ export default function RequestsPage() {
     fetchPage(pageIndex, pageSize, dateRange)
   }, [pageIndex, pageSize, dateRange])
 
-
   if (error) {
     return (
       <ContentLayout title="SMS отчёты">
@@ -104,27 +101,29 @@ export default function RequestsPage() {
 
   return (
     <ContentLayout title="SMS отчёты">
-      <div className="mb-4 flex flex-wrap items-center gap-4">
-        <DatePickerWithRange
-          date={dateRange}
-          onSelect={range => {
-            setDateRange(range)
-            setPageIndex(0)
-          }}
-        />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            setDateRange(undefined)
-            setPageIndex(0)
-          }}
-        >
-          Сбросить
-        </Button>
+      <div className="px-4 mb-4 flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <DatePickerWithRange
+            date={dateRange}
+            onSelect={range => {
+              setDateRange(range)
+              setPageIndex(0)
+            }}
+          />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setDateRange(undefined)
+              setPageIndex(0)
+            }}
+          >
+            Сбросить
+          </Button>
+        </div>
       </div>
 
-      <div className="overflow-auto mb-4">
+      <div className="px-4 overflow-auto mb-4">
         <DataTable<ApiEntry, typeof apiSchema>
           data={rows}
           columns={apiColumns}
@@ -133,12 +132,23 @@ export default function RequestsPage() {
         />
       </div>
 
+
       <div className="flex items-center justify-between px-4 py-2">
         <div className="flex gap-2">
-          <Button size="icon" variant="outline" onClick={() => setPageIndex(0)} disabled={pageIndex === 0}>
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => setPageIndex(0)}
+            disabled={pageIndex === 0}
+          >
             <ChevronsLeftIcon />
           </Button>
-          <Button size="icon" variant="outline" onClick={() => setPageIndex(p => Math.max(p - 1, 0))} disabled={pageIndex === 0}>
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => setPageIndex(p => Math.max(p - 1, 0))}
+            disabled={pageIndex === 0}
+          >
             <ChevronLeftIcon />
           </Button>
           <Button
@@ -158,11 +168,9 @@ export default function RequestsPage() {
             <ChevronsRightIcon />
           </Button>
         </div>
-
         <div className="text-sm font-medium">
           Страница {pageIndex + 1} из {totalPages}
-        </div>
-
+      </div>
         <div className="flex items-center gap-2">
           <span>Элементов на странице:</span>
           <Select

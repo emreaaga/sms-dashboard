@@ -1354,9 +1354,6 @@ video {
   .grid-cols-\[30\%\2c 70\%\] {
   grid-template-columns: 30% 70%;
 }
-  .grid-cols-\[1fr_auto\] {
-  grid-template-columns: 1fr auto;
-}
   .grid-rows-3 {
   grid-template-rows: repeat(3, minmax(0, 1fr));
 }
@@ -1647,10 +1644,6 @@ video {
   .bg-zinc-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1));
-}
-  .bg-gray-50 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
 }
   .fill-border {
   fill: hsl(var(--border));

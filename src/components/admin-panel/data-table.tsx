@@ -138,7 +138,7 @@ export function DataTable<TData, TSchema extends z.ZodObject<any>>({
   
   return (
     <Tabs defaultValue="outline" className="flex flex-col gap-2 w-full">
-      <TabsContent value="outline" className="px-4 lg:px-6 overflow-auto">
+      <TabsContent value="outline" className="overflow-auto">
         <div className="overflow-hidden rounded-lg border">
           {twoColumnsMode ? (
             (() => {
