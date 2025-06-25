@@ -170,7 +170,7 @@ export default function RequestsPage() {
         </div>
         <div className="text-sm font-medium">
           Страница {pageIndex + 1} из {totalPages}
-      </div>
+        </div>
         <div className="flex items-center gap-2">
           <span>Элементов на странице:</span>
           <Select
