@@ -100,7 +100,7 @@ export default function RequestsPage() {
   }
 
   return (
-    <ContentLayout title="SMS отчёты">
+    <ContentLayout title="SMS Главная">
       <div className="px-4 mb-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
           <DatePickerWithRange

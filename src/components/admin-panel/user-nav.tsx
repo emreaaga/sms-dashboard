@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { LayoutGrid, LogOut, User } from "lucide-react";
+import Link from 'next/link';
+import { LayoutGrid, LogOut, User as UserIcon } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,58 +19,65 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { logout } from '@/hooks/auth'
+} from '@/components/ui/dropdown-menu';
+import { logout } from '@/hooks/auth';
 
 export function UserNav() {
   return (
     <DropdownMenu>
+      <div className="px-2 pt-2 pb-1">
+        <p className="text-sm font-semibold">Karina Matsenko</p>
+        <p className="text-xs text-right text-muted-foreground">Ваш профиль</p>
+      </div>
       <TooltipProvider disableHoverableContent>
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="relative h-8 w-8 rounded-full"
-              >
+              <Button variant="outline" className="relative w-10 h-10 bg-[#ECECEC] p rounded-xl">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="#" alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">JD</AvatarFallback>
+                  <AvatarFallback className="text-lg bg-transparent text-[#2563EB]">KM</AvatarFallback>
                 </Avatar>
+                <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-[#10B981] border-2 border-white" />
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Профиль</TooltipContent>
+          <TooltipContent side="bottom">Меню пользователя</TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">John Doe</p>
+            <p className="text-sm font-medium leading-none">Karina Matsenko</p>
             <p className="text-xs leading-none text-muted-foreground">
-              johndoe@example.com
+              karina.matsenko@example.com
             </p>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
+          <DropdownMenuItem asChild>
             <Link href="/" className="flex items-center">
               <LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
-              Главная страница
+              Главная
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
+
+          <DropdownMenuItem asChild>
             <Link href="/settings" className="flex items-center">
-              <User className="w-4 h-4 mr-3 text-muted-foreground" />
+              <UserIcon className="w-4 h-4 mr-3 text-muted-foreground" />
               Профиль
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={logout}>
-          <LogOut className="w-4 h-4 mr-3 text-muted-foreground"/>
+
+        <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
+          <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
           Выйти
         </DropdownMenuItem>
       </DropdownMenuContent>

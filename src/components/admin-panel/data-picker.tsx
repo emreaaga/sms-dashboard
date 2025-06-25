@@ -3,7 +3,7 @@ import * as React from 'react'
 import { ru } from 'date-fns/locale'
 import { format } from 'date-fns'
 import { DateRange } from 'react-day-picker'
-import CalendarIcon from '@/icons/navbar/Calendar.svg'
+import CalendarIcon from '@/icons/navbar/calendar.svg'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -41,7 +41,7 @@ export function DatePickerWithRange({ date, onSelect }: Props) {
         <Button
           variant="outline"
           className={cn(
-            'w-[300px] justify-start text-left',
+            'w-[300px] rounded-2xl justify-start text-left',
             !date && 'text-muted-foreground'
           )}
         >
