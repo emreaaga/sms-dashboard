@@ -1,1 +1,6 @@
-{}
+{
+  "/login/page": "app/login/page.js",
+  "/icon.ico/route": "app/icon.ico/route.js",
+  "/(dashboard)/page": "app/(dashboard)/page.js",
+  "/(dashboard)/create-request/page": "app/(dashboard)/create-request/page.js"
+}
