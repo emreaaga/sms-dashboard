@@ -1,8 +1,10 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
   "/login/page": "app/login/page.js",
   "/api/auth/logout/route": "app/api/auth/logout/route.js",
   "/api/auth/login/route": "app/api/auth/login/route.js",
   "/api/report/sms/route": "app/api/report/sms/route.js",
+  "/icon.ico/route": "app/icon.ico/route.js",
   "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/(dashboard)/requests/page": "app/(dashboard)/requests/page.js"
+  "/(dashboard)/create-request/page": "app/(dashboard)/create-request/page.js"
 }

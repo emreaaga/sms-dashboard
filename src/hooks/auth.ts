@@ -38,16 +38,18 @@ export async function login(username: string, password: string) {
   scheduleRefresh(expiresIn);
 }
 
-export async function logout() {
-  try {
-    await fetch(`${AUTH_BASE}/logout`, {
+export function logout() {
+  const url = `${AUTH_BASE}/logout`;
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url);
+  } else {
+    fetch(url, {
       method: 'POST',
       credentials: 'include',
-    })
-  } catch (err) {
-    console.error('Logout error:', err)
-  } finally {
-    window.location.replace('/login')
+      keepalive: true,
+    });
   }
+  window.location.replace('/login');
 }
+
 
