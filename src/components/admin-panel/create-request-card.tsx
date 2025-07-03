@@ -51,7 +51,6 @@ export default function CreateRequestCard() {
     e.preventDefault()
     setError(null)
 
-    // минимальная валидация
     if (!name || !content || !originator || !merchantId) {
       setError('Заполните все поля')
       return
@@ -223,12 +222,17 @@ export default function CreateRequestCard() {
           <div className="grid grid-cols-[150px_1fr] items-center gap-4">
             <CardDescription>Мерчант ID</CardDescription>
             <Input
+              type="number"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              min="1"
               value={merchantId}
               onChange={e => setMerchantId(e.target.value)}
               placeholder="Например, 1"
               className="rounded-2xl"
             />
           </div>
+
 
           <Separator />
 

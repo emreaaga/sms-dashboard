@@ -1,6 +1,10 @@
 {
-  "/api/sms-templates/route": "app/api/sms-templates/route.js",
-  "/(dashboard)/requests/page": "app/(dashboard)/requests/page.js",
+  "/login/page": "app/login/page.js",
+  "/api/report/sms/route": "app/api/report/sms/route.js",
+  "/api/auth/refresh/route": "app/api/auth/refresh/route.js",
+  "/api/auth/logout/route": "app/api/auth/logout/route.js",
   "/(dashboard)/create-request/page": "app/(dashboard)/create-request/page.js",
-  "/icon.ico/route": "app/icon.ico/route.js"
+  "/(dashboard)/page": "app/(dashboard)/page.js",
+  "/(dashboard)/requests/page": "app/(dashboard)/requests/page.js",
+  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js"
 }

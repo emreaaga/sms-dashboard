@@ -7,6 +7,7 @@ import { apiSchema, apiColumns, ApiEntry } from '@/lib/main-api-table'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from "@/components/ui/checkbox"
+import { FileSpreadsheet } from 'lucide-react'
 import {
   Accordion,
   AccordionContent,
@@ -132,6 +133,50 @@ export default function RequestsPage() {
     )
   }
 
+const handleExport = async () => {
+  try {
+    const exportUrl = new URL('/api/export', window.location.origin);
+    exportUrl.searchParams.set('page',   String(pageIndex));
+    exportUrl.searchParams.set('size',   String(pageSize));
+    if (dateRange?.from) exportUrl.searchParams.set(
+      'startDate', format(dateRange.from, 'yyyy-MM-dd')
+    );
+    if (dateRange?.to)   exportUrl.searchParams.set(
+      'endDate',   format(dateRange.to,   'yyyy-MM-dd')
+    );
+    selectedOperators.forEach(op => exportUrl.searchParams.append('operator', op));
+    selectedStatuses.forEach(st => exportUrl.searchParams.append('status', st));
+    selectedSenders.forEach(sd => exportUrl.searchParams.append('sender', sd));
+
+    // 2. Запрашиваем бинарный файл
+    const res = await fetch(exportUrl.toString(), {
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error(`Сервер вернул ${res.status}`);
+
+    const blob = await res.blob();
+
+    // 3. Делаем временный URL и клик по <a download>
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+
+    // Можно взять имя из заголовка Content-Disposition, или задать дефолт:
+    const disposition = res.headers.get('Content-Disposition') || '';
+    const filenameMatch = disposition.match(/filename="?(.+)"?/);
+    a.download = filenameMatch ? filenameMatch[1] : 'export.xlsx';
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e: any) {
+    console.error('Export error:', e);
+    // сюда можно добавить UI-уведомление об ошибке
+  }
+};
+
+
   return (
     <ContentLayout title="SMS Главная">
       <div className="px-4 mb-4 flex justify-between items-center">
@@ -230,6 +275,14 @@ export default function RequestsPage() {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            variant="outline"
+            className="rounded-2xl flex items-center gap-2"
+            onClick={handleExport}
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            Экспорт Excel
+          </Button>
         </div>
       </div>
 
