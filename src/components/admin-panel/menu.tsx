@@ -3,6 +3,7 @@
 import Link from "next/link";
 import LogOut from '@/icons/navbar/logout.svg'
 import { usePathname } from "next/navigation";
+import { logout } from "@/hooks/auth";
 
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
@@ -91,7 +92,7 @@ export function Menu({ isOpen }: MenuProps) {
                     className="w-full justify-center h-10 mt-5 text-white hover:bg-[#1D4ED8] hover:text-white"
                   >
                     <span className={cn(isOpen === false ? "" : "mr-4")}>
-                      <LogOut size={18} />
+                      <LogOut onClick={logout} size={18} />
                     </span>
                     <p
                       className={cn(

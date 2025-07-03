@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { ContentLayout } from '@/components/admin-panel/content-layout'
 import { DataTable } from '@/components/admin-panel/data-table'
@@ -38,8 +37,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default function RequestsPage() {
-  const router = useRouter()
-
   const [rows, setRows] = useState<ApiEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -53,7 +50,6 @@ export default function RequestsPage() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
   const [selectedSenders, setSelectedSenders] = useState<string[]>([])
 
-  // справочники для фильтров
   const OPERATORS = [
     { id: '1', label: 'Beeline' },
     { id: '2', label: 'Ucell' },
@@ -63,16 +59,8 @@ export default function RequestsPage() {
     { id: '10', label: 'HUMANS' },
   ]
   const STATUSES = [
-    'Ошибка',
-    'Созданно',
-    'В обработке',
-    'Отправлено',
-    'Доставлено',
-    'Не доставлено',
-    'Просрочено',
-    'Отклонено',
-    'Удалено',
-    'Блокированный',
+    'Ошибка', 'Созданно', 'В обработке', 'Отправлено', 'Доставлено',
+    'Не доставлено', 'Просрочено', 'Отклонено', 'Удалено', 'Блокированный',
   ]
   const SENDERS = ['22700', 'QuickPay']
 
@@ -84,39 +72,34 @@ export default function RequestsPage() {
     setLoading(true)
     setError(null)
 
-    const token = sessionStorage.getItem('accessToken')
-    if (!token) {
-      router.replace('/login')
-      return
-    }
-
+    // собираем URL с параметрами
     const url = new URL('/api/report/sms', window.location.origin)
     url.searchParams.set('page', String(idx))
     url.searchParams.set('size', String(size))
-    if (range?.from) {
-      url.searchParams.set('startDate', format(range.from, 'yyyy-MM-dd'))
-    }
-    if (range?.to) {
-      url.searchParams.set('endDate', format(range.to, 'yyyy-MM-dd'))
-    }
-    selectedOperators.forEach(opId => url.searchParams.append('operator', opId))
+    if (range?.from) url.searchParams.set(
+      'startDate', format(range.from, 'yyyy-MM-dd')
+    )
+    if (range?.to) url.searchParams.set(
+      'endDate', format(range.to, 'yyyy-MM-dd')
+    )
+    selectedOperators.forEach(op => url.searchParams.append('operator', op))
     selectedStatuses.forEach(st => url.searchParams.append('status', st))
     selectedSenders.forEach(sd => url.searchParams.append('sender', sd))
 
     try {
       const res = await fetch(url.toString(), {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',  // отправляем HttpOnly-cookie автоматически
       })
       if (!res.ok) throw new Error(`Сервер вернул ${res.status}`)
 
-      const page = (await res.json()) as {
+      const page = await res.json() as {
         content: ApiEntry[]
         totalPages: number
       }
 
       const parsed = z.array(apiSchema).safeParse(page.content)
       if (!parsed.success) {
-        console.error('❌ Zod ошибки:', parsed.error.format())
+        console.error('Zod errors', parsed.error.format())
         setRows([])
       } else {
         setRows(parsed.data)
@@ -153,7 +136,7 @@ export default function RequestsPage() {
     <ContentLayout title="SMS Главная">
       <div className="px-4 mb-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          {/* дата-диапазон */}
+          {/* сразу отправляем запрос при выборе даты */}
           <DatePickerWithRange
             date={dateRange}
             onSelect={range => {
@@ -162,96 +145,78 @@ export default function RequestsPage() {
             }}
           />
 
+          {/* остальные фильтры */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-  variant="outline"
-  className="rounded-2xl flex items-center gap-2 overflow-visible h-8 px-3"
->
-  <FilterIcon className="h-4 w-4 flex-none overflow-visible" />
-  <span>Фильтры</span>
-</Button>
-
-
+              <Button variant="outline" className="rounded-2xl flex items-center gap-2 h-8 px-3">
+                <FilterIcon className="h-4 w-4" />
+                <span>Фильтры</span>
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-70 p-2" align="center">
+            <DropdownMenuContent className="w-70 p-2">
               <DropdownMenuLabel>Фильтры</DropdownMenuLabel>
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion type="single" collapsible>
                 <AccordionItem value="operator">
                   <AccordionTrigger>По оператору</AccordionTrigger>
                   <AccordionContent>
-                    <div className="flex flex-col gap-2 px-2 py-1">
-                      {OPERATORS.map(op => (
-                        <label key={op.id} className="flex items-center gap-2 text-sm">
-                          <Checkbox
-                            checked={selectedOperators.includes(op.id)}
-                            onCheckedChange={checked =>
-                              setSelectedOperators(prev =>
-                                checked
-                                  ? [...prev, op.id]
-                                  : prev.filter(x => x !== op.id)
-                              )
-                            }
-                          />
-                          {op.label}
-                        </label>
-                      ))}
-                    </div>
+                    {OPERATORS.map(op => (
+                      <label key={op.id} className="flex items-center gap-2 text-sm">
+                        <Checkbox
+                          checked={selectedOperators.includes(op.id)}
+                          onCheckedChange={ch =>
+                            setSelectedOperators(prev =>
+                              ch ? [...prev, op.id] : prev.filter(x => x !== op.id)
+                            )
+                          }
+                        />
+                        {op.label}
+                      </label>
+                    ))}
                   </AccordionContent>
                 </AccordionItem>
-
                 <AccordionItem value="status">
                   <AccordionTrigger>По статусу</AccordionTrigger>
                   <AccordionContent>
-                    <div className="flex flex-col gap-2 px-2 py-1">
-                      {STATUSES.map(st => (
-                        <label key={st} className="flex items-center gap-2 text-sm">
-                          <Checkbox
-                            checked={selectedStatuses.includes(st)}
-                            onCheckedChange={checked =>
-                              setSelectedStatuses(prev =>
-                                checked
-                                  ? [...prev, st]
-                                  : prev.filter(x => x !== st)
-                              )
-                            }
-                          />
-                          {st}
-                        </label>
-                      ))}
-                    </div>
+                    {STATUSES.map(st => (
+                      <label key={st} className="flex items-center gap-2 text-sm">
+                        <Checkbox
+                          checked={selectedStatuses.includes(st)}
+                          onCheckedChange={ch =>
+                            setSelectedStatuses(prev =>
+                              ch ? [...prev, st] : prev.filter(x => x !== st)
+                            )
+                          }
+                        />
+                        {st}
+                      </label>
+                    ))}
                   </AccordionContent>
                 </AccordionItem>
-
-                {/* Отправители */}
                 <AccordionItem value="sender">
                   <AccordionTrigger>По отправителю</AccordionTrigger>
                   <AccordionContent>
-                    <div className="flex flex-col gap-2 px-2 py-1">
-                      {SENDERS.map(sd => (
-                        <label key={sd} className="flex items-center gap-2 text-sm">
-                          <Checkbox
-                            checked={selectedSenders.includes(sd)}
-                            onCheckedChange={checked =>
-                              setSelectedSenders(prev =>
-                                checked
-                                  ? [...prev, sd]
-                                  : prev.filter(x => x !== sd)
-                              )
-                            }
-                          />
-                          {sd}
-                        </label>
-                      ))}
-                    </div>
+                    {SENDERS.map(sd => (
+                      <label key={sd} className="flex items-center gap-2 text-sm">
+                        <Checkbox
+                          checked={selectedSenders.includes(sd)}
+                          onCheckedChange={ch =>
+                            setSelectedSenders(prev =>
+                              ch ? [...prev, sd] : prev.filter(x => x !== sd)
+                            )
+                          }
+                        />
+                        {sd}
+                      </label>
+                    ))}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-              <div className="mt-4 px-2 flex justify-center gap-2">
+              {/* Сброс всех фильтров */}
+              <div className="mt-4 flex justify-center gap-2">
                 <Button
-                  size='sm'
+                  size="sm"
                   variant="ghost"
-                  className='text-[#E34D5E]'
+                  className="text-[#E34D5E]"
                   onClick={() => {
                     setSelectedOperators([])
                     setSelectedStatuses([])
@@ -262,27 +227,9 @@ export default function RequestsPage() {
                 >
                   Сбросить
                 </Button>
-               <Button size='sm' className="rounded-2xl bg-[#2563EB] hover:bg-[#1E40AF]">
-            Применить
-          </Button>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* кнопка сброса */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setDateRange(undefined)
-              setSelectedOperators([])
-              setSelectedStatuses([])
-              setSelectedSenders([])
-              setPageIndex(0)
-            }}
-          >
-            Сбросить
-          </Button>
         </div>
       </div>
 
@@ -296,7 +243,7 @@ export default function RequestsPage() {
         />
       </div>
 
-      {/* кастомная пагинация */}
+      {/* пагинация */}
       <div className="flex items-center justify-between px-4 py-2 border-t">
         <div className="flex gap-2">
           <Button

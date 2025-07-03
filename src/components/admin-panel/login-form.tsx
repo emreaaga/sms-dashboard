@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Loader2Icon } from "lucide-react"
 import { useState } from "react"
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
 
 
 export interface LoginFormProps
@@ -18,7 +17,6 @@ export function LoginForm({
   loading = false,
   ...props
 }: LoginFormProps) {
-  const [visible, setVisible] = useState(false)
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-start gap-1 text-left">
@@ -27,8 +25,8 @@ export function LoginForm({
       </div>
       <div className="grid gap-6">
         <div className="grid gap-3">
-          <Label htmlFor="login">Логин</Label>
-          <Input disabled={loading} className="rounded-xl" id="login" name="login" type="text" placeholder="Ваш логин" required />
+          <Label htmlFor="username">Логин</Label>
+          <Input disabled={loading} className="rounded-xl" id="username" name="username" type="text" placeholder="Ваш логин" required />
         </div>
         <div className="grid gap-3">
           <Label htmlFor="password">Пароль</Label>
